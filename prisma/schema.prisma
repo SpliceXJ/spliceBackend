@@ -1,0 +1,114 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String    @id @default(uuid())
+  firstname String
+  lastname  String
+  username  String
+  email     String    @unique
+  vendor    Vendor?
+  consumer  Consumer?
+}
+
+model Vendor {
+  id           String         @id @default(uuid())
+  userId       String         @unique
+  user         User           @relation(fields: [userId], references: [id])
+  brandname    String
+  menu         Menu[]
+  employee     Employee?
+  businessHour BusinessHours?
+}
+
+model Menu {
+  id              String      @id @default(uuid())
+  menuName        String
+  menuDescription String
+  menuImages      MenuImages?
+  foodItem        FoodItem[]
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  vendorId        String      @unique
+  vendor          Vendor      @relation(fields: [vendorId], references: [id])
+}
+
+model FoodItem {
+  id              String      @id @default(uuid())
+  menuID          String      @unique
+  menu            Menu        @relation(fields: [menuID], references: [id])
+  foodName        String      @unique
+  foodPrice       String      @unique
+  foodDescription String?
+  foodImages      FoodImages?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+}
+
+model FoodImages {
+  id         String   @id @default(uuid())
+  foodItemId String   @unique
+  foodItem   FoodItem @relation(fields: [foodItemId], references: [id])
+}
+
+model MenuImages {
+  id     String @id @default(uuid())
+  menuID String @unique
+  menu   Menu   @relation(fields: [menuID], references: [id])
+}
+
+model Consumer {
+  id     String @id @default(uuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id])
+}
+
+model Employee {
+  id              String      @id @default(uuid())
+  roleName        String
+  roleDescription String
+  roleAccess      RoleAccess?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  vendorId        String      @unique
+  vendor          Vendor      @relation(fields: [vendorId], references: [id])
+}
+
+model RoleAccess {
+  employeeId String   @unique
+  employee   Employee @relation(fields: [employeeId], references: [id])
+  payment    Boolean
+  operation  Boolean
+  Inventory  Boolean
+  general    Boolean
+}
+
+model BusinessHours {
+  id          String        @id @default(uuid())
+  days        DaysOfTheWeek
+  openingTime DateTime
+  closedTime  DateTime
+  isOpen      Boolean
+  isClosed    Boolean
+  vendorId    String        @unique
+  vendor      Vendor        @relation(fields: [vendorId], references: [id])
+}
+
+enum DaysOfTheWeek {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
+}
