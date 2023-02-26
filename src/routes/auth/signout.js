@@ -1,6 +1,7 @@
-const { Router } = require("express");
-const { PrismaClient } = require("@prisma/client");
-const router = Router();
+import { PrismaClient } from "@prisma/client";
+import Router from 'express'
+
+const router = Router()
 
 const prisma = new PrismaClient();
 router.post("/", (req, res) => {
@@ -12,4 +13,4 @@ router.post("/", (req, res) => {
     res.status(401).send("User is not signed in");
   }
 });
-module.exports = router
+export default router

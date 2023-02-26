@@ -16,7 +16,7 @@ model User {
   lastname  String
   username  String    @unique
   email     String    @unique
-  password  String    @unique
+  password  String    
   vendor    Vendor?
   consumer  Consumer?
 }

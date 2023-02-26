@@ -1,11 +1,14 @@
-const express = require("express");
-const session = require("express-session");
-const signupRouter = require("./routes/auth/signup");
-const signinRouter = require("./routes/auth/signIn");
-const signedOutRouter = require("./routes/auth/signout");
+import express from "express";
+import session from "express-session";
+import signupRouter from "./src/routes/auth/signup.js";
+import signedOutRouter from "./src/routes/auth/signout.js";
+import signedInRouter from "./src/routes/auth/signIn.js";
+import { protect } from "./src/modules/auth.js";
+import { createNewUser, signin } from "./src/handlers/users.js";
 
 const app = express();
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(
   session({
     secret: "asguard",
@@ -14,10 +17,8 @@ app.use(
   })
 );
 const PORT = 3002;
-
-app.use("/api/v1/signup", signupRouter);
-app.use("/api/v1/signin", signinRouter);
-app.use("/api/v1/signout", signedOutRouter)
+app.post("/api/v1/signup", createNewUser);
+app.post("/api/v1/signin", signin);
 
 app.listen(PORT, () => {
   console.log(`SERVER RUNNING AT PORT ${PORT}`);
