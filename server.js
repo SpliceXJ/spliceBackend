@@ -3,6 +3,7 @@ import session from "express-session";
 import { protect } from "./src/modules/auth.js";
 import {
   createNewUser,
+  emailVerify,
   forgotPassword,
   signin,
   signout,
@@ -22,6 +23,7 @@ const PORT = 3002;
 app.post("/api/v1/signup", createNewUser);
 app.post("/api/v1/signin", signin);
 app.post("/api/v1/forgotPassword", forgotPassword);
+app.post("/api/v1/emailVerify", emailVerify);
 app.post("/api/v1/signout", signout);
 
 app.listen(PORT, () => {
