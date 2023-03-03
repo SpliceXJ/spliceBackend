@@ -78,7 +78,9 @@ export const emailVerify = async (req, res) => {
       return res.status(500).json({ message: "Failed to send email" });
     }
     console.log(`Email sent: ${info.response}`);
-    return res.json({ message: "Password reset link sent to your email" });
+    return res
+      .status(200)
+      .json({ message: "Password reset link sent to your email" });
   });
 };
 
