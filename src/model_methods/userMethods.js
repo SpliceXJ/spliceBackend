@@ -8,20 +8,28 @@ dotenv.config();
 export class User {
     // username eventually changes to ID at some point yah
   constructor(username = null) {
-    this.prismaUser = prisma.user.findUnique({
-        where: {
-          username: username,
-        },
-      });
+    this.username = username;
+    this.prismaUser = "";
   };
 
+  async fetchUser () {
+    this.prismaUser = await prisma.user.findUnique({
+      where: {
+        username: this.username,
+      },
+    });
+    return this.prismaUser;
+  };
+
+  // always call this function..... always
   async doesExist () {
     let exists = false;
-    if (this.prismaUser) exists = true;
+    if (await this.fetchUser()) exists = true;
     return exists;
   };
 
   async comparePassword (password) {
+    console.log(this.prismaUser, password)
     return await bcrypt.compare(password, this.prismaUser.password);
   };
 
@@ -42,7 +50,7 @@ export class User {
     return token;
   };
 
-  async createNewUser ({firstname, lastname, username, email, password}) {
+  async createNewUser (firstname, lastname, username, email, password) {
     try {
         const user = await prisma.user.create({
             data: {
@@ -54,7 +62,7 @@ export class User {
             },
           });
         this.prismaUser = user;
-        return user;
+        return this;
     } catch (err) {
         console.log(err);
         return null;
