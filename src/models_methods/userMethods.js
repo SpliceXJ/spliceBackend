@@ -94,8 +94,4 @@ export class User {
     const transporter = await this.transporter();
     return await transporter.sendMail(mailOptions);
   }
-
-  async resetPassword() {
-    
-  }
 }
