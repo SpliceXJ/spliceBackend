@@ -5,7 +5,7 @@ CREATE TYPE "DaysOfTheWeek" AS ENUM ('MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY
 CREATE TABLE "User" (
     "id" TEXT NOT NULL,
     "firstname" TEXT NOT NULL,
-    "lastname" TEXT NOT NULL,
+    "lastname" TEXT,
     "username" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "password" TEXT NOT NULL,
@@ -110,9 +110,6 @@ CREATE UNIQUE INDEX "User_username_key" ON "User"("username");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
-
--- CreateIndex
-CREATE UNIQUE INDEX "User_password_key" ON "User"("password");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Vendor_userId_key" ON "Vendor"("userId");

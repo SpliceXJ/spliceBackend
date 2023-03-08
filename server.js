@@ -2,6 +2,7 @@ import express from "express";
 import { protect } from "./src/middlewares/auth.js";
 import {
   createNewUser,
+  emailVerify,
   forgotPassword,
   signin,
 } from "./src/handlers/users.js";
@@ -15,6 +16,8 @@ const PORT = 3002;
 app.post("/api/v1/signup", createNewUser);
 app.post("/api/v1/signin", signin);
 app.post("/api/v1/forgotPassword", forgotPassword);
+app.post("/api/v1/emailVerify", emailVerify);
+app.post("/api/v1/signout", signout);
 
 app.use(protect); // generating request user & token auth
 
