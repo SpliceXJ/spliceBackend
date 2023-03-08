@@ -3,6 +3,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  engineType    = "binary"
 }
 
 datasource db {
@@ -14,8 +15,9 @@ model User {
   id        String    @id @default(uuid())
   firstname String
   lastname  String
-  username  String
+  username  String    @unique
   email     String    @unique
+  password  String    
   vendor    Vendor?
   consumer  Consumer?
 }
