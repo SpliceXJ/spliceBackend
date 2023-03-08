@@ -1,51 +1,42 @@
-import prisma from "../db.js";
-import { comparePassword, createJWT, hashedPassword } from "../modules/auth.js";
-import nodemailer from "nodemailer";
+import { User } from "../models_methods/userMethods.js";
 import jwt from "jsonwebtoken";
 import * as dotenv from "dotenv";
 dotenv.config();
-
 // New User Authentication
 export const createNewUser = async (req, res) => {
-  const user = await prisma.user.create({
-    data: {
-      firstname: req.body.firstname,
-      username: req.body.username,
-      email: req.body.email,
-      password: await hashedPassword(req.body.password),
-    },
-  });
-  const token = createJWT(user);
-  res.json({ token });
+  const user = await new User().createNewUser(
+    req.body.firstname,
+    req.body.lastname,
+    req.body.username,
+    req.body.email,
+    req.body.password
+  );
+  if (user) {
+    const token = await user.createJWT();
+    return res.status(200).json({ token });
+  }
+  return res.status(400).json({ message: "account creation un-successful" });
 };
 
 // Sign in
 export const signin = async (req, res) => {
-  const user = await prisma.user.findUnique({
-    where: {
-      username: req.body.username,
-    },
-  });
-  if (!user) {
-    return res.status(401).json({ message: "Invalid username or password." });
-  }
-  const isValid = await comparePassword(req.body.password, user.password);
+  const user = new User(req.body.username);
 
-  if (!isValid) {
-    res.status(401);
+  if (!(await user.doesExist()))
+    return res.status(400).json({ message: "Invalid Credentials" });
+  const token = await user.signIn(req.body.password);
+  if (token) {
+    return res.status(200).json({ token, message: "Login Successful" });
+  } else {
+    return res.status(400).json({ message: "Invalid Credentials" });
   }
-  const token = createJWT(user);
-  res.json({ token });
 };
-
 // Email Verification
 export const emailVerify = async (req, res) => {
-  const { email } = req.body;
+  const user = await new User().emailVerify(req.body.email);
 
   // Check if the user exists in your database
-  const user = await prisma.user.findUnique({
-    where: { email },
-  });
+
   if (!user) {
     return res.status(404).json({ message: "User not found" });
   }
@@ -56,22 +47,16 @@ export const emailVerify = async (req, res) => {
   });
 
   // Send an email to the user with a link to reset their password
-  const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: process.env.SMTP_PORT,
-    secure: true,
-    auth: {
-      user: process.env.SMTP_USERNAME,
-      pass: process.env.SMTP_PASSWORD,
-    },
-  });
+
   const resetUrl = `https://192.168.91.172:19000/ResetPasswordScreen/${token}`;
   const message = {
     from: process.env.SMTP_FROM_EMAIL,
-    to: email,
+    to: req.body.email,
     subject: "Password Reset Request",
     html: `Please click on this link to reset your password: <a href="${resetUrl}">${resetUrl}</a>`,
   };
+
+  const transporter = await new User().transporter();
   transporter.sendMail(message, (error, info) => {
     if (error) {
       console.error(error);

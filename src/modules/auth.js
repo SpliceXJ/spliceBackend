@@ -4,23 +4,23 @@ import bcrypt from "bcrypt";
 import * as dotenv from "dotenv";
 dotenv.config();
 
-export const comparePassword = (password, hash) => {
-  return bcrypt.compare(password, hash);
-};
+// export const comparePassword = (password, hash) => {
+//   return bcrypt.compare(password, hash);
+// };
 
-export const hashedPassword = (password) => {
-  return bcrypt.hash(password, 10);
-};
-export const createJWT = (user) => {
-  const token = jwt.sign(
-    {
-      id: user.id,
-      username: user.username,
-    },
-    process.env.JWT_SECRET_KEY
-  );
-  return token;
-};
+// export const hashedPassword = (password) => {
+//   return bcrypt.hash(password, 10);
+// };
+// export const createJWT = (user) => {
+//   const token = jwt.sign(
+//     {
+//       id: user.id,
+//       username: user.username,
+//     },
+//     process.env.JWT_SECRET_KEY
+//   );
+//   return token;
+// };
 
 export const protect = (req, res, next) => {
   const bearer = req.headers.authorization;
