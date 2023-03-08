@@ -68,4 +68,33 @@ export class User {
         return null;
     }
   };
+
+  async emailVerify(email) {
+    const user = await prisma.user.findUnique({
+      where: { email },
+    });
+    return user;
+  }
+
+  async transporter() {
+    const transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: process.env.SMTP_PORT,
+      secure: true,
+      auth: {
+        user: process.env.SMTP_USERNAME,
+        pass: process.env.SMTP_PASSWORD,
+      },
+    });
+    return transporter;
+  }
+
+  async sendEmail(mailOptions) {
+    const transporter = await this.transporter();
+    return await transporter.sendMail(mailOptions);
+  }
+
+  async resetPassword() {
+
+  }
 }
