@@ -2,8 +2,8 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
-  engineType    = "binary"
+  provider   = "prisma-client-js"
+  engineType = "binary"
 }
 
 datasource db {
@@ -17,7 +17,7 @@ model User {
   lastname  String?
   username  String    @unique
   email     String    @unique
-  password  String    
+  password  String
   vendor    Vendor?
   consumer  Consumer?
 }
@@ -27,9 +27,19 @@ model Vendor {
   userId       String         @unique
   user         User           @relation(fields: [userId], references: [id])
   brandname    String
-  menu         Menu[]
+  store        Store?
   employee     Employee?
   businessHour BusinessHours?
+}
+
+model Store {
+  id               String @id @default(uuid())
+  storeName        String
+  storeImage       String
+  storeDescription String
+  menu             Menu[]
+  vendorId         String @unique
+  vendor           Vendor @relation(fields: [vendorId], references: [id])
 }
 
 model Menu {
@@ -40,8 +50,8 @@ model Menu {
   foodItem        FoodItem[]
   createdAt       DateTime    @default(now())
   updatedAt       DateTime    @updatedAt
-  vendorId        String      @unique
-  vendor          Vendor      @relation(fields: [vendorId], references: [id])
+  storeId         String      @unique
+  store           Store       @relation(fields: [storeId], references: [id])
 }
 
 model FoodItem {
