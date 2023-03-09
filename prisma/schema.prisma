@@ -20,8 +20,8 @@ model User {
   password  String
   vendor    Vendor?
   consumer  Consumer?
-  createdAt       DateTime    @default(now())
-  updatedAt       DateTime    @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 }
 
 model Vendor {
@@ -32,20 +32,20 @@ model Vendor {
   store        Store?
   employee     Employee?
   businessHour BusinessHours?
-  createdAt       DateTime    @default(now())
-  updatedAt       DateTime    @updatedAt
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
 }
 
 model Store {
-  id               String @id @default(uuid())
+  id               String   @id @default(uuid())
   storeName        String
   storeImage       String
   storeDescription String
   menu             Menu[]
-  vendorId         String @unique
-  vendor           Vendor @relation(fields: [vendorId], references: [id])
-  createdAt       DateTime    @default(now())
-  updatedAt       DateTime    @updatedAt
+  vendorId         String   @unique
+  vendor           Vendor   @relation(fields: [vendorId], references: [id])
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 }
 
 model Menu {
@@ -76,24 +76,24 @@ model FoodImages {
   id         String   @id @default(uuid())
   foodItemId String   @unique
   foodItem   FoodItem @relation(fields: [foodItemId], references: [id])
-  createdAt       DateTime    @default(now())
-  updatedAt       DateTime    @updatedAt
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
 
 model MenuImages {
-  id     String @id @default(uuid())
-  menuID String @unique
-  menu   Menu   @relation(fields: [menuID], references: [id])
-  createdAt       DateTime    @default(now())
-  updatedAt       DateTime    @updatedAt
+  id        String   @id @default(uuid())
+  menuID    String   @unique
+  menu      Menu     @relation(fields: [menuID], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Consumer {
-  id     String @id @default(uuid())
-  userId String @unique
-  user   User   @relation(fields: [userId], references: [id])
-  createdAt       DateTime    @default(now())
-  updatedAt       DateTime    @updatedAt
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Employee {
@@ -114,8 +114,8 @@ model RoleAccess {
   operation  Boolean
   Inventory  Boolean
   general    Boolean
-  createdAt       DateTime    @default(now())
-  updatedAt       DateTime    @updatedAt
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
 
 model BusinessHours {
@@ -127,8 +127,8 @@ model BusinessHours {
   isClosed    Boolean
   vendorId    String        @unique
   vendor      Vendor        @relation(fields: [vendorId], references: [id])
-  createdAt       DateTime    @default(now())
-  updatedAt       DateTime    @updatedAt
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
 }
 
 enum DaysOfTheWeek {
